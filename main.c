@@ -14,22 +14,22 @@ int main()
 {
     int PC, IR, AC = 0;
 
-    int instructions = [0x1940, 0x5941, 0x2941];
-    int * instruction_ptr = 300
+    int instructions[] = {0x1940, 0x5941, 0x2941};
+    int data[] = {0x2, 0x3};
+    
+    int * instruction_ptr = (int*) 300;
+    int * data_ptr = (int*) 940;
 
-    int data = [0x2, 0x3];
-    int * data_ptr = 940;
+    printf("BEGIN SIMULATION");
 
-    printf("BEGIN SIMULATION\n\n");
-
-    printf("Instruction Memory\n");
+    printf("\n\nInstruction Memory");
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
     {
         *(instruction_ptr + i) = instructions[i];
-        printf("%p %d\t", instruction_ptr, *instruction_ptr);
+        printf("%d\t", instruction_ptr + i);
     }
 
-    printf("Data Memory\n");
+    printf("\n\nData Memory");
     for (int i = 0; i < sizeof(instructions)/sizeof(data[0]); i++)
     {
         *(data_ptr + i) = data[i];
@@ -37,14 +37,16 @@ int main()
     }
 }
 
-int decode_opcode(instruction)
+int decode_opcode(int instruction)
 {
+    int opcode;
     opcode = instruction >> 12;
     return opcode;
 }
 
-int decode_address(instruction)
+int decode_address(int instruction)
 {
+    int address;
     address = instruction & 0x0FFF;
     return address;
 }
