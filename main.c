@@ -7,46 +7,86 @@
 #include <stdio.h>
 
 // Function Prototypes
-int decode_opcode(int);
-int decode_address(int);
 
 int main()
 {
-    int PC, IR, AC = 0;
+    int PC = 300, IR, AC = 0;
+    int opcode, address;
+    int step = 1;
 
-    int instructions[] = {0x1940, 0x5941, 0x2941};
-    int data[] = {0x2, 0x3};
-    
-    int * instruction_ptr = (int*) 300;
-    int * data_ptr = (int*) 940;
+    int instructions[] = {0x1940, 0x5941, 0x2941, 0x0, 0x0};
+    int data[] = {0x3, 0x2};
 
     printf("BEGIN SIMULATION");
 
-    printf("\n\nInstruction Memory");
+    printf("\n\nInstruction Memory\n");
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
     {
-        *(instruction_ptr + i) = instructions[i];
-        printf("%d\t", instruction_ptr + i);
+        printf("%d %x\t", 300+i, instructions[i]);
     }
 
-    printf("\n\nData Memory");
-    for (int i = 0; i < sizeof(instructions)/sizeof(data[0]); i++)
+    printf("\n\nData Memory\n");
+    for (int i = 0; i < sizeof(data)/sizeof(data[0]); i++)
     {
-        *(data_ptr + i) = data[i];
-        printf("%p %d", data_ptr, *data_ptr);
+        printf("%d %x\t", 940+i, data[i]);
     }
-}
 
-int decode_opcode(int instruction)
-{
-    int opcode;
-    opcode = instruction >> 12;
-    return opcode;
-}
+    for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
+    {
+        /* Fetch Stage */
+        IR = instructions[i];
 
-int decode_address(int instruction)
-{
-    int address;
-    address = instruction & 0x0FFF;
-    return address;
+        if (IR == 0)
+            continue;
+
+        printf("\n\nStep %d\n", step);
+        printf("Fetch instruction from memory location %d\n", PC);
+        printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
+
+        PC++; /* Increment the Program Counter */
+        step++; /* Increment the Step */
+
+        /* Execute Stage */
+        opcode = instructions[i] >> 12;
+        address = instructions[i] & 0x0FFF;
+
+        printf("\nStep %d\n", step);
+        printf("Execute instruction and increment the PC: ");
+
+        switch(opcode)
+        {
+            case 1: 
+                AC = data[address-0x940];   /* Load AC from memory */
+                printf("load AC from memory location %x\n", address);
+                break;
+            case 2: 
+                data[address-0x940] = AC;   /* Store AC to memory */
+                printf("store AC to memory location %x\n", address);
+                break;
+            case 5: 
+                AC += data[address-0x940];  /* Add to AC from memory */
+                printf("add to AC from memory location %x\n", address);
+                break;
+        }
+
+        printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
+
+        step++; /* Increment the Step */
+    }
+
+    printf("\n\nInstruction Memory\n");
+    for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
+    {
+        printf("%d %x\t", 300+i, instructions[i]);
+    }
+
+    printf("\n\nData Memory\n");
+    for (int i = 0; i < sizeof(data)/sizeof(data[0]); i++)
+    {
+        printf("%d %x\t", 940+i, data[i]);
+    }
+
+    printf("\n\nEND SIMULATION");
+
+    return 0;
 }
