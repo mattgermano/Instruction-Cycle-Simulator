@@ -14,8 +14,14 @@ int main()
     int opcode, address;
     int step = 1;
 
-    int instructions[] = {0x1940, 0x5941, 0x2941, 0x0, 0x0};
-    int data[] = {0x3, 0x2};
+    int instructions[] = {0x3005, 0x5940, 0x9941, 0x7006, 0x2942, 0x3005, 0x8942, 0x6943, 0x2944, 0x7006};
+    int data[] = {0x3, 0x5, 0x0, 0x10, 0x0};
+
+    int device_5_index = 0;
+    int device_6_index = 0;
+
+    int device_5[] = {0x2, 0x13};
+    int device_6[] = {0, 0};
 
     printf("BEGIN SIMULATION");
 
@@ -41,7 +47,7 @@ int main()
 
         printf("\n\nStep %d\n", step);
         printf("Fetch instruction from memory location %d\n", PC);
-        printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
+        printf("PC = %d\nAC = %x\nIR = %x\n", PC, AC, IR);
 
         PC++; /* Increment the Program Counter */
         step++; /* Increment the Step */
@@ -63,13 +69,45 @@ int main()
                 data[address-0x940] = AC;   /* Store AC to memory */
                 printf("store AC to memory location %x\n", address);
                 break;
+            case 3:
+                if (address == 5) /* Load AC from I/O */
+                {
+                    AC = device_5[device_5_index];
+                    device_5_index++;
+                }
+                else
+                    AC = device_6[0];
+                printf("load AC from I/O\n");
+                break;
             case 5: 
                 AC += data[address-0x940];  /* Add to AC from memory */
                 printf("add to AC from memory location %x\n", address);
                 break;
+            case 6: 
+                AC -= data[address-0x940];  /* Subtract memory from AC */
+                printf("subtract AC from memory location %x\n", address);
+                break;
+            case 7:
+                if (address == 5) /* Store AC to I/O */
+                    device_5[0] = AC;
+                else
+                {
+                    device_6[device_6_index] = AC;
+                    device_6_index++;
+                } 
+                printf("store AC to I/O\n");
+                break;
+            case 8:
+                AC *= data[address-0x940];  /* Multiply AC with memory */
+                printf("multiply AC from memory location %x\n", address);
+                break;
+            case 9:
+                AC /= data[address-0x940];  /* Divide AC by memory */
+                printf("divide AC from memory location %x\n", address);
+                break;
         }
 
-        printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
+        printf("PC = %d\nAC = %x\nIR = %x\n", PC, AC, IR);
 
         step++; /* Increment the Step */
     }
@@ -84,6 +122,12 @@ int main()
     for (int i = 0; i < sizeof(data)/sizeof(data[0]); i++)
     {
         printf("%d %x\t", 940+i, data[i]);
+    }
+
+    printf("\n\nDevice 6 Memory\n");
+    for (int i = 0; i < sizeof(device_6)/sizeof(device_6[0]); i++)
+    {
+        printf("%d\t", device_6[i]);
     }
 
     printf("\n\nEND SIMULATION");
