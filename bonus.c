@@ -5,6 +5,8 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main()
 {
@@ -35,7 +37,7 @@ int main()
     printf("\n\nData Memory\n");
     for (int i = 0; i < sizeof(data)/sizeof(data[0]); i++)
     {
-        printf("%d %d\t", 940+i, data[i]);
+        printf("%d %x\t", 940+i, data[i]);
     }
 
     printf("\n\nDevice 5 Memory\n");
@@ -49,6 +51,10 @@ int main()
     {
         printf("%d\t", device_6[i]);
     }
+
+    /* Seed the random number generator */
+    srand(time(NULL));
+    int random = -1;
 
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
     {
@@ -65,9 +71,6 @@ int main()
         /* Execute Stage */
         opcode = instructions[i] >> 12;     /* Right shift the instruction by 12 bits to determine the opcode */
         address = instructions[i] & 0x0FFF; /* Bitwise AND the instruction with 0x0FFF to determine the address */
-
-        printf("\nStep %d\n", step);
-        printf("Execute instruction and increment the PC: ");
 
         switch(opcode)
         {
@@ -127,11 +130,20 @@ int main()
 
         printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
 
-        /* If the opcode is associated with an I/O instruction, signal an interrupt */
-        if (opcode == 3 || opcode == 7)
+        step++; /* Increment the Step */
+        random--; /* Decrement random */
+
+        /* If random has reached 0, signal an interrupt */
+        if(random == 0)
             printf("\nINTERRUPT");
 
-        step++; /* Increment the Step */
+        /* If an I/O instruction is executed, generate a random number between 0 and 2 */
+        if (opcode == 3 || opcode == 7)
+        {
+            random = rand() % 3;
+            if(random == 0)
+                printf("\nINTERRUPT");
+        }
     }
 
     /* Print the updated contents of the instruction, data, and device memory */
@@ -144,7 +156,7 @@ int main()
     printf("\n\nData Memory\n");
     for (int i = 0; i < sizeof(data)/sizeof(data[0]); i++)
     {
-        printf("%d %d\t", 940+i, data[i]);
+        printf("%d %x\t", 940+i, data[i]);
     }
 
     printf("\n\nDevice 5 Memory\n");
