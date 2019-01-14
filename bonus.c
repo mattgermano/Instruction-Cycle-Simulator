@@ -147,7 +147,7 @@ int main()
     }
 
     /* Print the updated contents of the instruction, data, and device memory */
-    printf("\n\nInstruction Memory\n");
+    printf("\nInstruction Memory\n");
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
     {
         printf("%d %x\t", 300+i, instructions[i]);
@@ -156,7 +156,7 @@ int main()
     printf("\n\nData Memory\n");
     for (int i = 0; i < sizeof(data)/sizeof(data[0]); i++)
     {
-        printf("%d %x\t", 940+i, data[i]);
+        printf("%d %d\t", 940+i, data[i]);
     }
 
     printf("\n\nDevice 5 Memory\n");

@@ -41,7 +41,7 @@ int main()
         if (IR == 0)
             continue;
 
-        printf("\n\nStep %d\n", step);
+        printf("\nStep %d\n", step);
         printf("Fetch instruction from memory location %d\n", PC);
         printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
 
@@ -80,7 +80,7 @@ int main()
     }
 
     /* Print the updated contents of the instruction and data memory */
-    printf("\n\nInstruction Memory\n");
+    printf("\nInstruction Memory\n");
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
     {
         printf("%d %x\t", 300+i, instructions[i]);
