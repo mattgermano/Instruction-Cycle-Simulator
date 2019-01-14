@@ -1,7 +1,7 @@
 /*
 * Lab Exercise 1 - Instruction Cycle Simulator
 * Author - Matt Germano and Gary Lam
-* Date - 1/8/2019
+* Date - 1/16/2019
 */
 
 #include <stdio.h>
@@ -30,6 +30,7 @@ int main()
     {
         printf("%d %d\t", 940+i, data[i]);
     }
+    printf("\n");
 
     /* Fetch and execute each instruction in memory by decoding its opcode and address */
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
@@ -74,7 +75,7 @@ int main()
                 printf("Opcode not found...no action taken\n");
         }
 
-        printf("PC = %d\nAC = %d\nIR = %x", PC, AC, IR);
+        printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
 
         step++; /* Increment the Step */
     }

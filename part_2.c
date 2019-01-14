@@ -1,7 +1,7 @@
 /*
 * Lab Exercise 1 - Instruction Cycle Simulator
 * Author - Matt Germano and Gary Lam
-* Date - 1/8/2019
+* Date - 1/16/2019
 */
 
 #include <stdio.h>
@@ -49,6 +49,7 @@ int main()
     {
         printf("%d\t", device_6[i]);
     }
+    printf("\n");
 
     for (int i = 0; i < sizeof(instructions)/sizeof(instructions[0]); i++)
     {
@@ -82,6 +83,7 @@ int main()
             case 2: 
                 data[address-0x940] = AC;   /* Store AC to memory */
                 printf("Store AC to memory location %x\n", address);
+                printf("%x = %d data memory location update\n", address, AC);
                 break;
             case 3:
                 if (address == 5) /* Load AC from I/O */

@@ -1,7 +1,7 @@
 /*
 * Lab Exercise 1 - Instruction Cycle Simulator
 * Author - Matt Germano and Gary Lam
-* Date - 1/8/2019
+* Date - 1/16/2019
 */
 
 #include <stdio.h>
@@ -51,6 +51,7 @@ int main()
     {
         printf("%d\t", device_6[i]);
     }
+    printf("\n");
 
     /* Seed the random number generator */
     srand(time(NULL));
@@ -61,7 +62,7 @@ int main()
         /* Fetch Stage */
         IR = instructions[i]; /* Copy the instruction in memory to the instruction register */
 
-        printf("\n\nStep %d\n", step);
+        printf("\nStep %d\n", step);
         printf("Fetch instruction from memory location %d\n", PC);
         printf("PC = %d\nAC = %d\nIR = %x\n", PC, AC, IR);
 
@@ -72,6 +73,9 @@ int main()
         opcode = instructions[i] >> 12;     /* Right shift the instruction by 12 bits to determine the opcode */
         address = instructions[i] & 0x0FFF; /* Bitwise AND the instruction with 0x0FFF to determine the address */
 
+        printf("\nStep %d\n", step);
+        printf("Execute instruction and increment the PC: ");
+
         switch(opcode)
         {
             case 1: 
@@ -81,6 +85,7 @@ int main()
             case 2: 
                 data[address-0x940] = AC;   /* Store AC to memory */
                 printf("Store AC to memory location %x\n", address);
+                printf("%x = %d data memory location update\n", address, AC);
                 break;
             case 3:
                 if (address == 5) /* Load AC from I/O */
@@ -135,14 +140,14 @@ int main()
 
         /* If random has reached 0, signal an interrupt */
         if(random == 0)
-            printf("\nINTERRUPT");
+            printf("\nINTERRUPT\n");
 
         /* If an I/O instruction is executed, generate a random number between 0 and 2 */
         if (opcode == 3 || opcode == 7)
         {
             random = rand() % 3;
             if(random == 0)
-                printf("\nINTERRUPT");
+                printf("\nINTERRUPT\n");
         }
     }
 
